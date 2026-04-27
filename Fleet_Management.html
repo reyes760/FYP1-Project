@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Management | DSS Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4ff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
+            border-right: 1px solid #1e3a8a;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 20px rgba(29, 78, 216, 0.15);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 2rem 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 2rem;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: #fff;
+            margin-right: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.6rem;
+            border-radius: 12px;
+        }
+
+        .logo h2 {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .logo span {
+            display: block;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.75rem;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+            padding: 0 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.25rem;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-link.active i {
+            color: #93c5fd;
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 1rem;
+            font-size: 1rem;
+        }
+
+        .logout-section {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.85rem 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .logout-btn i {
+            margin-right: 1rem;
+            font-size: 1rem;
+            width: 20px;
+        }
+
+        /* Main */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: #f0f4ff;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2.5rem 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.35rem;
+        }
+
+        .welcome-text p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 0.65rem 1.25rem;
+            border-radius: 50px;
+            border: 1px solid #dbeafe;
+            box-shadow: 0 2px 10px rgba(29, 78, 216, 0.08);
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            margin-right: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .user-info h3 {
+            color: #1e3a8a;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+        }
+
+        .user-info p {
+            color: #3b82f6;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 3rem;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            gap: 0.5rem;
+            flex: 1;
+            max-width: 360px;
+        }
+
+        .search-box i {
+            color: #93c5fd;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            background: transparent;
+            width: 100%;
+        }
+
+        .filter-select {
+            padding: 0.6rem 1rem;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            background: #fff;
+            color: #1e3a8a;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: flex;
+            gap: 1rem;
+            padding: 0 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mini-stat {
+            background: #fff;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            padding: 0.85rem 1.25rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mini-stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .mini-stat-icon.total {
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        }
+
+        .mini-stat-icon.available {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .mini-stat-icon.rented {
+            background: linear-gradient(135deg, #d97706, #fbbf24);
+        }
+
+        .mini-stat-icon.service {
+            background: linear-gradient(135deg, #dc2626, #f87171);
+        }
+
+        .mini-stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .mini-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Table */
+        .table-wrap {
+            padding: 0 3rem 2rem;
+            flex: 1;
+        }
+
+        .table-container {
+            background: #fff;
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(29, 78, 216, 0.07);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        }
+
+        thead th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f4ff;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8faff;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody td {
+            padding: 1rem 1.25rem;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+        .plate-badge {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rented {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-service {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-inactive {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .btn-edit:hover {
+            background: #dbeafe;
+            transform: scale(1.1);
+        }
+
+        .btn-delete {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #bfdbfe;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 58, 138, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 520px;
+            box-shadow: 0 25px 60px rgba(29, 78, 216, 0.2);
+            border: 1px solid #dbeafe;
+            animation: modalIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: scale(0.85) translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid #dbeafe;
+            background: #f0f4ff;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.65rem 0.9rem;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            outline: none;
+            transition: border 0.2s;
+            background: #fff;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #3b82f6;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.7rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-cancel-form {
+            background: #f0f4ff;
+            color: #1e40af;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            padding: 0.7rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-cancel-form:hover {
+            background: #dbeafe;
+        }
+
+        /* Delete confirm modal */
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(29, 78, 216, 0.2);
+            border: 1px solid #dbeafe;
+            animation: modalIn 0.3s ease;
+        }
+
+        .modal-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #dc2626, #f87171);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 1.75rem;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-text {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #f87171);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.35);
+        }
+
+        .btn-cancel {
+            background: #f0f4ff;
+            color: #1e40af;
+            border: 1px solid #dbeafe;
+        }
+
+        .btn-cancel:hover {
+            background: #dbeafe;
+        }
+
+        /* Logout modal */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 58, 138, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-modal.show {
+            display: flex;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e3a8a;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+        }
+
+        .toast.show {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 260px;
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+                height: 100vh;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .header,
+            .toolbar,
+            .stats-row,
+            .table-wrap {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .stats-row {
+                flex-wrap: wrap;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                <div>
+                    <h2>DSS Portal</h2>
+                    <span>Car Rental System</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="Home.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a href="Fleet_Management.html" class="nav-link active"><i
+                            class="fas fa-truck"></i> Fleet Management</a></li>
+                <li class="nav-item"><a href="Schedule.html" class="nav-link"><i class="fas fa-calendar-check"></i>
+                        Schedule</a></li>
+                <li class="nav-item"><a href="Revenue_Management.html" class="nav-link"><i
+                            class="fas fa-dollar-sign"></i> Revenue Management</a></li>
+                <li class="nav-item"><a href="Reports.html" class="nav-link"><i class="fas fa-chart-bar"></i>
+                        Reports</a></li>
+            </ul>
+            <div class="logout-section">
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i><span>Log Out</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main -->
+        <div class="main-content">
+            <div class="header">
+                <div class="welcome-text">
+                    <h1>Fleet Management</h1>
+                    <p>Manage your vehicle inventory and maintenance schedules.</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">?</div>
+                    <div class="user-info">
+                        <h3 id="userName">Loading...</h3>
+                        <p id="userRole">Admin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="mini-stat">
+                    <div class="mini-stat-icon total"><i class="fas fa-car"></i></div>
+                    <div>
+                        <div class="mini-stat-label"><b>Total Vehicles</b></div>
+                        <div class="mini-stat-value" id="statTotal">0</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon available"><i class="fas fa-check-circle"></i></div>
+                    <div>
+                        <div class="mini-stat-label"><b>Available</b></div>
+                        <div class="mini-stat-value" id="statAvailable">0</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon rented"><i class="fas fa-key"></i></div>
+                    <div>
+                        <div class="mini-stat-label"><b>Rented</b></div>
+                        <div class="mini-stat-value" id="statRented">0</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon service"><i class="fas fa-wrench"></i></div>
+                    <div>
+                        <div class="mini-stat-label"><b>In Service</b></div>
+                        <div class="mini-stat-value" id="statService">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search by plate, brand, model...">
+                </div>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="Available">Available</option>
+                    <option value="Rented">Rented</option>
+                    <option value="In Service">In Service</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+                <button class="add-btn" id="addVehicleBtn">
+                    <i class="fas fa-plus"></i> Add Vehicle
+                </button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrap">
+                <div class="table-container">
+                    <table id="vehicleTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Plate</th>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Year</th>
+                                <th>Color</th>
+                                <th>Status</th>
+                                <th>Mileage</th>
+                                <th>Last Service</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicleBody">
+                            <tr>
+                                <td colspan="10" class="empty-state"><i class="fas fa-truck"></i>Loading vehicles...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Vehicle Modal -->
+    <div class="modal-overlay" id="vehicleModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Vehicle</h3>
+                <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Plate Number *</label>
+                    <input type="text" id="fPlate" placeholder="e.g. ABC 1234" style="text-transform:uppercase;">
+                </div>
+                <div class="form-group">
+                    <label>Brand *</label>
+                    <input type="text" id="fBrand" placeholder="e.g. Toyota">
+                </div>
+                <div class="form-group">
+                    <label>Model *</label>
+                    <input type="text" id="fModel" placeholder="e.g. Vios">
+                </div>
+                <div class="form-group">
+                    <label>Year *</label>
+                    <input type="number" id="fYear" placeholder="e.g. 2022" min="1990" max="2030">
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="text" id="fColor" placeholder="e.g. White">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="fStatus">
+                        <option value="Available">Available</option>
+                        <option value="Rented">Rented</option>
+                        <option value="In Service">In Service</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mileage (km)</label>
+                    <input type="number" id="fMileage" placeholder="e.g. 45000" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Last Service Date</label>
+                    <input type="date" id="fLastService">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn-cancel-form" id="cancelVehicleModal">Cancel</button>
+                <button class="btn-save" id="saveVehicleBtn"><i class="fas fa-save"></i> Save Vehicle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fas fa-trash"></i></div>
+            <h2 class="modal-title">Delete Vehicle?</h2>
+            <p class="modal-text">Are you sure you want to delete <strong id="deleteVehicleName"></strong>? This action
+                cannot be undone.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" id="confirmDelete"><i class="fas fa-trash"></i> Yes, Delete</button>
+                <button class="btn btn-cancel" id="cancelDelete">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="modal-content">
+            <div class="modal-icon" style="background: linear-gradient(135deg, #1d4ed8, #3b82f6);">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h2 class="modal-title">Log Out?</h2>
+            <p class="modal-text">Are you sure you want to log out?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-confirm" id="confirmLogout"><i class="fas fa-check"></i> Yes, Log Out</button>
+                <button class="btn btn-cancel" id="cancelLogout"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API = 'http://localhost:5000/api';
+
+            // Session check
+            const userData = localStorage.getItem('loggedInUser');
+            if (!userData) { window.location.href = 'Login.html'; return; }
+
+            try {
+                const user = JSON.parse(userData);
+                const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username;
+                const initials = ((user.first_name?.[0] || '') + (user.last_name?.[0] || '')).toUpperCase() || user.username?.substring(0, 2).toUpperCase() || '?';
+                document.getElementById('userAvatar').textContent = initials;
+                document.getElementById('userName').textContent = fullName;
+                document.getElementById('userRole').textContent = user.role || 'Admin';
+            } catch (e) { window.location.href = 'Login.html'; }
+
+            // ── State ──
+            let allVehicles = [];
+            let editingId = null;
+            let deleteId = null;
+
+            // ── Toast ──
+            function showToast(msg, isError = false) {
+                const t = document.getElementById('toast');
+                document.getElementById('toastMsg').textContent = msg;
+                t.className = 'toast show' + (isError ? ' error' : '');
+                setTimeout(() => t.className = 'toast', 3000);
+            }
+
+            // ── Load vehicles ──
+            async function loadVehicles() {
+                try {
+                    const res = await fetch(`${API}/vehicles`);
+                    const result = await res.json();
+                    if (result.success) {
+                        allVehicles = result.vehicles;
+                        renderTable(allVehicles);
+                        updateStats(allVehicles);
+                    } else {
+                        showToast('Failed to load vehicles', true);
+                    }
+                } catch {
+                    showToast('Server error! Is Flask running?', true);
+                }
+            }
+
+            // ── Stats ──
+            function updateStats(vehicles) {
+                document.getElementById('statTotal').textContent = vehicles.length;
+                document.getElementById('statAvailable').textContent = vehicles.filter(v => v.status === 'Available').length;
+                document.getElementById('statRented').textContent = vehicles.filter(v => v.status === 'Rented').length;
+                document.getElementById('statService').textContent = vehicles.filter(v => v.status === 'In Service').length;
+            }
+
+            // ── Render table ──
+            // ── Render table - SORTED BY ID ──
+            function renderTable(vehicles) {
+                const tbody = document.getElementById('vehicleBody');
+                if (vehicles.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="10" class="empty-state"><i class="fas fa-truck"></i>No vehicles found.</td></tr>`;
+                    return;
+                }
+
+                // 🔥 SORT BY ID (ascending)
+                const sortedVehicles = [...vehicles].sort((a, b) => {
+                    const idA = parseInt(a.id) || 0;
+                    const idB = parseInt(b.id) || 0;
+                    return idA - idB;
+                });
+
+                const statusClass = {
+                    'Available': 'status-available',
+                    'Rented': 'status-rented',
+                    'In Service': 'status-service',
+                    'Inactive': 'status-inactive'
+                };
+
+                tbody.innerHTML = sortedVehicles.map((v, i) => `
+        <tr>
+            <td style="color:#9ca3af;font-size:0.8rem;">${i + 1}</td>
+            <td><span class="plate-badge">${v.plate}</span></td>
+            <td style="font-weight:600;color:#1e3a8a;">${v.brand}</td>
+            <td>${v.model}</td>
+            <td>${v.year}</td>
+            <td>${v.color || '—'}</td>
+            <td><span class="status-badge ${statusClass[v.status] || 'status-inactive'}">${v.status}</span></td>
+            <td>${v.mileage ? v.mileage.toLocaleString() + ' km' : '—'}</td>
+            <td>${v.last_service || '—'}</td>
+            <td>
+                <div class="action-btns">
+                    <button class="btn-edit" onclick="openEdit(${v.id})" title="Edit"><i class="fas fa-pen"></i></button>
+                    <button class="btn-delete" onclick="openDelete(${v.id}, '${v.brand} ${v.model} (${v.plate})')" title="Delete"><i class="fas fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>`).join('');
+            }
+
+            // ── Search & Filter ──
+            function applyFilter() {
+                const search = document.getElementById('searchInput').value.toLowerCase();
+                const status = document.getElementById('statusFilter').value;
+                const filtered = allVehicles.filter(v => {
+                    const matchSearch = !search ||
+                        v.plate.toLowerCase().includes(search) ||
+                        v.brand.toLowerCase().includes(search) ||
+                        v.model.toLowerCase().includes(search) ||
+                        v.color?.toLowerCase().includes(search);
+                    const matchStatus = !status || v.status === status;
+                    return matchSearch && matchStatus;
+                });
+                renderTable(filtered);
+            }
+
+            document.getElementById('searchInput').addEventListener('input', applyFilter);
+            document.getElementById('statusFilter').addEventListener('change', applyFilter);
+
+            // ── Add Vehicle Modal ──
+            document.getElementById('addVehicleBtn').addEventListener('click', () => {
+                editingId = null;
+                document.getElementById('modalTitle').textContent = 'Add Vehicle';
+                document.getElementById('fPlate').value = '';
+                document.getElementById('fBrand').value = '';
+                document.getElementById('fModel').value = '';
+                document.getElementById('fYear').value = '';
+                document.getElementById('fColor').value = '';
+                document.getElementById('fStatus').value = 'Available';
+                document.getElementById('fMileage').value = '';
+                document.getElementById('fLastService').value = '';
+                document.getElementById('vehicleModal').classList.add('show');
+            });
+
+            // ── Edit ──
+            window.openEdit = (id) => {
+                const v = allVehicles.find(x => x.id === id);
+                if (!v) return;
+                editingId = id;
+                document.getElementById('modalTitle').textContent = 'Edit Vehicle';
+                document.getElementById('fPlate').value = v.plate;
+                document.getElementById('fBrand').value = v.brand;
+                document.getElementById('fModel').value = v.model;
+                document.getElementById('fYear').value = v.year;
+                document.getElementById('fColor').value = v.color || '';
+                document.getElementById('fStatus').value = v.status;
+                document.getElementById('fMileage').value = v.mileage || '';
+                document.getElementById('fLastService').value = v.last_service || '';
+                document.getElementById('vehicleModal').classList.add('show');
+            };
+
+            // ── Close modal ──
+            ['closeModal', 'cancelVehicleModal'].forEach(id => {
+                document.getElementById(id).addEventListener('click', () => {
+                    document.getElementById('vehicleModal').classList.remove('show');
+                });
+            });
+
+            // ── Save (add/edit) ──
+            document.getElementById('saveVehicleBtn').addEventListener('click', async () => {
+                const plate = document.getElementById('fPlate').value.trim();
+                const brand = document.getElementById('fBrand').value.trim();
+                const model = document.getElementById('fModel').value.trim();
+                const year = document.getElementById('fYear').value.trim();
+
+                if (!plate || !brand || !model || !year) {
+                    showToast('Please fill in all required fields', true);
+                    return;
+                }
+
+                const data = {
+                    plate, brand, model,
+                    year: parseInt(year),
+                    color: document.getElementById('fColor').value.trim(),
+                    status: document.getElementById('fStatus').value,
+                    mileage: parseInt(document.getElementById('fMileage').value) || 0,
+                    last_service: document.getElementById('fLastService').value
+                };
+
+                try {
+                    const url = editingId ? `${API}/vehicles/${editingId}` : `${API}/vehicles`;
+                    const method = editingId ? 'PUT' : 'POST';
+                    const res = await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await res.json();
+
+                    if (result.success) {
+                        document.getElementById('vehicleModal').classList.remove('show');
+                        showToast(editingId ? 'Vehicle updated!' : 'Vehicle added!');
+                        loadVehicles();
+                    } else {
+                        showToast(result.message, true);
+                    }
+                } catch {
+                    showToast('Server error!', true);
+                }
+            });
+
+            // ── Delete ──
+            window.openDelete = (id, name) => {
+                deleteId = id;
+                document.getElementById('deleteVehicleName').textContent = name;
+                document.getElementById('deleteModal').classList.add('show');
+            };
+
+            document.getElementById('confirmDelete').addEventListener('click', async () => {
+                if (!deleteId) return;
+                try {
+                    const res = await fetch(`${API}/vehicles/${deleteId}`, { method: 'DELETE' });
+                    const result = await res.json();
+                    if (result.success) {
+                        document.getElementById('deleteModal').classList.remove('show');
+                        showToast('Vehicle deleted!');
+                        loadVehicles();
+                    } else {
+                        showToast(result.message, true);
+                    }
+                } catch {
+                    showToast('Server error!', true);
+                }
+            });
+
+            document.getElementById('cancelDelete').addEventListener('click', () => {
+                document.getElementById('deleteModal').classList.remove('show');
+            });
+
+            // ── Logout ──
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                document.getElementById('logoutModal').classList.add('show');
+            });
+
+            document.getElementById('confirmLogout').addEventListener('click', () => {
+                localStorage.removeItem('loggedInUser');
+                sessionStorage.clear();
+                window.location.href = 'Login.html';
+            });
+
+            document.getElementById('cancelLogout').addEventListener('click', () => {
+                document.getElementById('logoutModal').classList.remove('show');
+            });
+
+            // Close modals on backdrop click
+            ['vehicleModal', 'deleteModal', 'logoutModal'].forEach(id => {
+                document.getElementById(id).addEventListener('click', (e) => {
+                    if (e.target === document.getElementById(id)) {
+                        document.getElementById(id).classList.remove('show');
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    ['vehicleModal', 'deleteModal', 'logoutModal'].forEach(id => {
+                        document.getElementById(id).classList.remove('show');
+                    });
+                }
+            });
+
+            // ── Mobile menu ──
+            if (window.innerWidth <= 768) {
+                const hamburger = document.createElement('button');
+                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+                hamburger.style.cssText = `position:fixed;top:20px;left:20px;z-index:1001;background:#1d4ed8;border:none;border-radius:10px;padding:10px 14px;color:white;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 12px rgba(29,78,216,0.3);`;
+                document.body.appendChild(hamburger);
+                hamburger.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+            }
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) document.getElementById('sidebar').classList.remove('active');
+            });
+
+            // ── Init ──
+            loadVehicles();
+        });
+    </script>
+</body>
+
+</html>

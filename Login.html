@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | DSS Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
+      overflow: hidden;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      75% {
+        transform: translateX(5px);
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-6">
+  <div class="max-w-md w-full">
+    <!-- Logo / Header -->
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 text-white rounded-2xl mb-4">
+        <i class="fas fa-car text-3xl"></i>
+      </div>
+      <h1 class="text-4xl font-bold text-white">Car Rental DSS Portal</h1>
+      <p class="text-blue-200 mt-2 text-lg">Decision Support System</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="card rounded-3xl p-8" id="loginCard">
+      <h2 class="text-2xl font-semibold text-gray-800 text-center mb-8">Log in to your account</h2>
+
+      <form method="POST" action="/login" class="space-y-6" id="loginForm">
+        <!-- Username -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-user-circle mr-2 text-blue-500"></i>Username *
+          </label>
+          <div class="relative">
+            <input type="text" id="username" required
+              class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="johndoe123">
+            <i class="fas fa-user-circle absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"></i>
+          </div>
+        </div>
+
+        <!-- Password Field - WITH Lock Icon in Label -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+            <i class="fas fa-lock text-blue-500 mr-2 icon-glow"></i>
+            Password <span class="text-blue-500">*</span>
+          </label>
+          <div class="relative">
+            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 text-lg"></i>
+            <input type="password" name="password" id="passwordInput" placeholder="123456"
+              class="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blye-500 focus:border-red-400 transition-all"
+              required>
+            <!-- Eye Icon Button -->
+            <button type="button" id="togglePassword"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-2 rounded-full hover:bg-red-50 transition-all hover:scale-110 shadow-sm"
+              aria-label="Show password">
+              <i class="fas fa-eye text-sm" id="eyeIcon"></i>
+            </button>
+          </div>
+        </div>
+        <div id="errorMessage" style="color: red; margin-top: 15px; font-weight: bold; width: 100%;"></div>
+
+        <!-- Remember Me + Create account -->
+        <div class="flex justify-between text-sm">
+          <a href="#" class="font-medium text-blue-600 hover:text-blue-700">
+            Forgot password?
+          </a>
+          <a href="Signup.html" class="font-medium text-blue-600 hover:text-blue-700">Create an account</a>
+        </div>
+
+        <!-- Login Button -->
+        <button type="submit" id="loginButton"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-2xl transition duration-300 text-lg">
+          <span id="buttonText">Log In</span>
+          <i id="buttonSpinner" class="fas fa-spinner fa-spin hidden ml-2"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-8 text-white/70 text-sm">
+      © 2026 Car Rental Decision Support System<br>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const API_BASE = 'http://localhost:5000/api';
+
+      const elements = {
+        form: document.getElementById('loginForm'),
+        button: document.getElementById('loginButton'),
+        buttonText: document.getElementById('buttonText'),
+        spinner: document.getElementById('buttonSpinner'),
+        username: document.getElementById('username'),
+        password: document.getElementById('passwordInput'),
+        errorMessage: document.getElementById('errorMessage'),
+      };
+
+      // Remove native form submission
+      elements.form.removeAttribute('method');
+      elements.form.removeAttribute('action');
+
+      elements.form.onsubmit = async (e) => {
+        e.preventDefault();
+
+        const username = elements.username.value.trim();
+        const password = elements.password.value;
+
+        if (!username || !password) {
+          alert('Please enter username and password.');
+          return;
+        }
+
+        // Loading state
+        elements.button.disabled = true;
+        elements.buttonText.textContent = 'Logging in...';
+        elements.spinner.classList.remove('hidden');
+
+        try {
+          const response = await fetch(`${API_BASE}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            // Save user info for use in other pages
+            elements.errorMessage.style.display = 'none';
+            elements.errorMessage.textContent = '';
+            localStorage.setItem('loggedInUser', JSON.stringify(result.user));
+            window.location.href = 'Home.html';
+          } else {
+            elements.errorMessage.style.display = 'block';
+            elements.errorMessage.textContent = result.message;
+          }
+
+        } catch (error) {
+          elements.errorMessage.style.display = 'block';
+          elements.errorMessage.textContent = 'Database not connected. Please try again later.';
+          console.error('Login error:', error);
+        } finally {
+          elements.button.disabled = false;
+          elements.buttonText.textContent = 'Log In';
+          elements.spinner.classList.add('hidden');
+        }
+      };
+
+      // Password toggle
+      document.getElementById('togglePassword').onclick = () => {
+        const input = elements.password;
+        const icon = document.getElementById('eyeIcon');
+        const isPass = input.type === 'password';
+        input.type = isPass ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+      };
+    });
+  </script>
+</body>
+
+</html>

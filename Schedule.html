@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule | DSS Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4ff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
+            border-right: 1px solid #1e3a8a;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 20px rgba(29, 78, 216, 0.15);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 2rem 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 2rem;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: #fff;
+            margin-right: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.6rem;
+            border-radius: 12px;
+        }
+
+        .logo h2 {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .logo span {
+            display: block;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.75rem;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+            padding: 0 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.25rem;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-link.active i {
+            color: #93c5fd;
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 1rem;
+            font-size: 1rem;
+        }
+
+        .logout-section {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.85rem 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .logout-btn i {
+            margin-right: 1rem;
+            font-size: 1rem;
+            width: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: #f0f4ff;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2.5rem 3rem 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .welcome-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.35rem;
+        }
+
+        .welcome-text p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 0.65rem 1.25rem;
+            border-radius: 50px;
+            border: 1px solid #dbeafe;
+            box-shadow: 0 2px 10px rgba(29, 78, 216, 0.08);
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            margin-right: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .user-info h3 {
+            color: #1e3a8a;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+        }
+
+        .user-info p {
+            color: #3b82f6;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 1rem;
+            padding: 0 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mini-stat {
+            background: #fff;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            padding: 0.85rem 1.25rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mini-stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .mini-stat-icon.total {
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        }
+
+        .mini-stat-icon.booking {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .mini-stat-icon.maint {
+            background: linear-gradient(135deg, #d97706, #fbbf24);
+        }
+
+        .mini-stat-icon.today {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+        }
+
+        .mini-stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .mini-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .cal-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 3rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .cal-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .cal-nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid #dbeafe;
+            background: #fff;
+            color: #1d4ed8;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .cal-nav-btn:hover {
+            background: #dbeafe;
+        }
+
+        .cal-month-label {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        .cal-today-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #dbeafe;
+            background: #fff;
+            color: #1d4ed8;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cal-today-btn:hover {
+            background: #dbeafe;
+        }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+        }
+
+        .cal-wrap {
+            padding: 0 3rem 2rem;
+            flex: 1;
+        }
+
+        .cal-container {
+            background: #fff;
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(29, 78, 216, 0.07);
+        }
+
+        .cal-header-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        }
+
+        .cal-header-row div {
+            padding: 0.75rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-left: 1px solid #f0f4ff;
+        }
+
+        .cal-cell {
+            min-height: 100px;
+            padding: 0.5rem;
+            border-right: 1px solid #f0f4ff;
+            border-bottom: 1px solid #f0f4ff;
+            cursor: pointer;
+            transition: background 0.15s;
+            position: relative;
+        }
+
+        .cal-cell:hover {
+            background: #f8faff;
+        }
+
+        .cal-cell.other-month {
+            background: #fafbff;
+        }
+
+        .cal-cell.other-month .cal-day-num {
+            color: #c7d2fe;
+        }
+
+        .cal-cell.today {
+            background: #eff6ff;
+        }
+
+        .cal-cell.today .cal-day-num {
+            background: #1d4ed8;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .cal-day-num {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.35rem;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cal-event {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: opacity 0.15s;
+        }
+
+        .cal-event:hover {
+            opacity: 0.8;
+        }
+
+        .cal-event.booking {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 3px solid #10b981;
+        }
+
+        .cal-event.maintenance {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .cal-event.other {
+            background: #ede9fe;
+            color: #5b21b6;
+            border-left: 3px solid #8b5cf6;
+        }
+
+        .cal-more {
+            font-size: 0.7rem;
+            color: #3b82f6;
+            font-weight: 600;
+            padding: 1px 4px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .legend-dot.booking {
+            background: #10b981;
+        }
+
+        .legend-dot.maintenance {
+            background: #f59e0b;
+        }
+
+        .legend-dot.other {
+            background: #8b5cf6;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 58, 138, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 520px;
+            box-shadow: 0 25px 60px rgba(29, 78, 216, 0.2);
+            border: 1px solid #dbeafe;
+            animation: modalIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: scale(0.85) translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid #dbeafe;
+            background: #f0f4ff;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.65rem 0.9rem;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            outline: none;
+            transition: border 0.2s;
+            background: #fff;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #3b82f6;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.7rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-cancel-form {
+            background: #f0f4ff;
+            color: #1e40af;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            padding: 0.7rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-cancel-form:hover {
+            background: #dbeafe;
+        }
+
+        .event-view-box {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 25px 60px rgba(29, 78, 216, 0.2);
+            border: 1px solid #dbeafe;
+            animation: modalIn 0.3s ease;
+        }
+
+        .event-type-pill {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .event-type-pill.booking {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .event-type-pill.maintenance {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .event-type-pill.other {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .event-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 1.25rem;
+        }
+
+        .event-detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+            font-size: 0.9rem;
+        }
+
+        .event-detail-row i {
+            color: #3b82f6;
+            width: 16px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .event-detail-label {
+            color: #6b7280;
+            font-size: 0.8rem;
+        }
+
+        .event-detail-value {
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-edit-event {
+            flex: 1;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 0.65rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit-event:hover {
+            background: #dbeafe;
+        }
+
+        .btn-delete-event {
+            flex: 1;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 0.65rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-delete-event:hover {
+            background: #fee2e2;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(29, 78, 216, 0.2);
+            border: 1px solid #dbeafe;
+            animation: modalIn 0.3s ease;
+        }
+
+        .modal-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 1.75rem;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-text {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #f87171);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.35);
+        }
+
+        .btn-cancel {
+            background: #f0f4ff;
+            color: #1e40af;
+            border: 1px solid #dbeafe;
+        }
+
+        .btn-cancel:hover {
+            background: #dbeafe;
+        }
+
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 58, 138, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-modal.show {
+            display: flex;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e3a8a;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+        }
+
+        .toast.show {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 260px;
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+                height: 100vh;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .header,
+            .cal-controls,
+            .stats-row,
+            .cal-wrap {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .stats-row {
+                flex-wrap: wrap;
+            }
+
+            .cal-cell {
+                min-height: 60px;
+                padding: 0.25rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                <div>
+                    <h2>DSS Portal</h2><span>Car Rental System</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="Home.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a href="Fleet_Management.html" class="nav-link"><i class="fas fa-truck"></i> Fleet
+                        Management</a></li>
+                <li class="nav-item"><a href="Schedule.html" class="nav-link active"><i
+                            class="fas fa-calendar-check"></i> Schedule</a></li>
+                <li class="nav-item"><a href="Revenue_Management.html" class="nav-link"><i
+                            class="fas fa-dollar-sign"></i> Revenue Management</a></li>
+                <li class="nav-item"><a href="Reports.html" class="nav-link"><i class="fas fa-chart-bar"></i>
+                        Reports</a></li>
+            </ul>
+            <div class="logout-section">
+                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Log
+                        Out</span></button>
+            </div>
+        </nav>
+
+        <!-- Main -->
+        <div class="main-content">
+            <div class="header">
+                <div class="welcome-text">
+                    <h1>Schedule</h1>
+                    <p>Manage bookings and vehicle maintenance schedules.</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">?</div>
+                    <div class="user-info">
+                        <h3 id="userName">Loading...</h3>
+                        <p id="userRole">Admin</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="mini-stat">
+                    <div class="mini-stat-icon total"><i class="fas fa-calendar-alt"></i></div>
+                    <div>
+                        <div class="mini-stat-label">Total Schedules</div>
+                        <div class="mini-stat-value" id="statTotal">0</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon booking"><i class="fas fa-key"></i></div>
+                    <div>
+                        <div class="mini-stat-label">Bookings</div>
+                        <div class="mini-stat-value" id="statBooking">0</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon maint"><i class="fas fa-wrench"></i></div>
+                    <div>
+                        <div class="mini-stat-label">Maintenance</div>
+                        <div class="mini-stat-value" id="statMaint">0</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-icon today"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <div class="mini-stat-label">This Month</div>
+                        <div class="mini-stat-value" id="statMonth">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cal-controls">
+                <div class="cal-nav">
+                    <button class="cal-nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                    <div class="cal-month-label" id="calMonthLabel">Month Year</div>
+                    <button class="cal-nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                    <button class="cal-today-btn" id="goToday">Today</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-dot booking"></div> Booking
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot maintenance"></div> Maintenance
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot other"></div> Other
+                        </div>
+                    </div>
+                    <button class="add-btn" id="addScheduleBtn"><i class="fas fa-plus"></i> Add Schedule</button>
+                </div>
+            </div>
+
+            <div class="cal-wrap">
+                <div class="cal-container">
+                    <div class="cal-header-row">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div class="cal-grid" id="calGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="scheduleModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Schedule</h3>
+                <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group form-full">
+                    <label>Title *</label>
+                    <input type="text" id="fTitle" placeholder="e.g. Customer booking - Ali">
+                </div>
+                <div class="form-group">
+                    <label>Type *</label>
+                    <select id="fType">
+                        <option value="Booking">Booking</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <!-- ✅ FIXED: Added missing vehicle select -->
+                <div class="form-group">
+                    <label>Vehicle</label>
+                    <select id="fVehicle">
+                        <option value="">— Select vehicle —</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <input type="text" id="fCustomer" placeholder="e.g. Ahmad Ali">
+                </div>
+                <div class="form-group">
+                    <label>Start Date *</label>
+                    <input type="date" id="fStartDate">
+                </div>
+                <div class="form-group">
+                    <label>End Date *</label>
+                    <input type="date" id="fEndDate">
+                </div>
+                <div class="form-group form-full">
+                    <label>Notes</label>
+                    <textarea id="fNotes" placeholder="Any additional notes..."></textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn-cancel-form" id="cancelScheduleModal">Cancel</button>
+                <button class="btn-save" id="saveScheduleBtn"><i class="fas fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- View Event Modal -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="event-view-box">
+            <div class="modal-header">
+                <div id="viewTypePill" class="event-type-pill booking">Booking</div>
+                <button class="modal-close" id="closeViewModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="event-title" id="viewTitle">Event Title</div>
+            <div class="event-detail-row">
+                <i class="fas fa-car"></i>
+                <div>
+                    <div class="event-detail-label">Vehicle</div>
+                    <div class="event-detail-value" id="viewVehicle">—</div>
+                </div>
+            </div>
+            <div class="event-detail-row">
+                <i class="fas fa-user"></i>
+                <div>
+                    <div class="event-detail-label">Customer</div>
+                    <div class="event-detail-value" id="viewCustomer">—</div>
+                </div>
+            </div>
+            <div class="event-detail-row">
+                <i class="fas fa-calendar-alt"></i>
+                <div>
+                    <div class="event-detail-label">Duration</div>
+                    <div class="event-detail-value" id="viewDates">—</div>
+                </div>
+            </div>
+            <div class="event-detail-row">
+                <i class="fas fa-sticky-note"></i>
+                <div>
+                    <div class="event-detail-label">Notes</div>
+                    <div class="event-detail-value" id="viewNotes">—</div>
+                </div>
+            </div>
+            <div class="event-actions">
+                <button class="btn-edit-event" id="editFromView"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn-delete-event" id="deleteFromView"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);">
+                <i class="fas fa-trash"></i>
+            </div>
+            <h2 class="modal-title">Delete Schedule?</h2>
+            <p class="modal-text">Are you sure you want to delete <strong id="deleteEventName"></strong>? This cannot be
+                undone.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" id="confirmDelete"><i class="fas fa-trash"></i> Yes, Delete</button>
+                <button class="btn btn-cancel" id="cancelDelete">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="modal-content">
+            <div class="modal-icon" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h2 class="modal-title">Log Out?</h2>
+            <p class="modal-text">Are you sure you want to log out?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-confirm" id="confirmLogout"><i class="fas fa-check"></i> Yes, Log Out</button>
+                <button class="btn btn-cancel" id="cancelLogout"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API = 'http://localhost:5000/api';
+
+            // ── Session ──
+            const userData = localStorage.getItem('loggedInUser');
+            if (!userData) { window.location.href = 'Login.html'; return; }
+
+            try {
+                const user = JSON.parse(userData);
+                const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username;
+                const initials = ((user.first_name?.[0] || '') + (user.last_name?.[0] || '')).toUpperCase() || user.username?.substring(0, 2).toUpperCase() || '?';
+                document.getElementById('userAvatar').textContent = initials;
+                document.getElementById('userName').textContent = fullName;
+                document.getElementById('userRole').textContent = user.role || 'Admin';
+            } catch (e) { window.location.href = 'Login.html'; }
+
+            // ── State ──
+            let allSchedules = [];
+            let allVehicles = [];
+            let editingId = null;
+            let viewingId = null;
+            let deleteId = null;
+            let currentDate = new Date();
+
+            // ── Toast ──
+            function showToast(msg, isError = false) {
+                const t = document.getElementById('toast');
+                document.getElementById('toastMsg').textContent = msg;
+                t.className = 'toast show' + (isError ? ' error' : '');
+                setTimeout(() => t.className = 'toast', 3000);
+            }
+
+            // ── Load vehicles ──
+            async function loadVehicles() {
+                try {
+                    const res = await fetch(`${API}/vehicles`);
+                    const result = await res.json();
+                    if (result.success) {
+                        allVehicles = result.vehicles;
+                        const sel = document.getElementById('fVehicle');
+                        sel.innerHTML = '<option value="">— Select vehicle —</option>';
+                        allVehicles.forEach(v => {
+                            const opt = document.createElement('option');
+                            opt.value = v.id;
+                            opt.textContent = `${v.plate} — ${v.brand} ${v.model}`;
+                            opt.dataset.plate = v.plate;
+                            sel.appendChild(opt);
+                        });
+                    }
+                } catch (e) { console.warn('Could not load vehicles'); }
+            }
+
+            // ── Load schedules ──
+            async function loadSchedules() {
+                try {
+                    const res = await fetch(`${API}/schedules`);          // ✅ /api/schedules
+                    const result = await res.json();
+                    if (result.success) {
+                        allSchedules = result.schedules;
+                        renderCalendar();
+                        updateStats();
+                    } else {
+                        showToast('Failed to load schedules', true);
+                    }
+                } catch {
+                    showToast('Server error! Is Flask running?', true);
+                }
+            }
+
+            // ── Stats ──
+            function updateStats() {
+                const now = new Date();
+                const thisMonth = allSchedules.filter(s => {
+                    const d = new Date(s.start_date);
+                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                });
+
+                document.getElementById('statTotal').textContent = allSchedules.length;
+                document.getElementById('statBooking').textContent = allSchedules.filter(s => s.type === 'Booking').length;
+                document.getElementById('statMaint').textContent = allSchedules.filter(s => s.type === 'Maintenance').length;
+                document.getElementById('statMonth').textContent = thisMonth.length;
+            }
+
+            // ── Calendar ──
+            function renderCalendar() {
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'];
+                document.getElementById('calMonthLabel').textContent = `${monthNames[month]} ${year}`;
+
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+                const grid = document.getElementById('calGrid');
+                grid.innerHTML = '';
+
+                const today = new Date();
+                const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+                function getSchedulesForDate(dateStr) {
+                    return allSchedules.filter(s => {
+                        const start = s.start_date.split('T')[0];
+                        const end = s.end_date.split('T')[0];
+                        return dateStr >= start && dateStr <= end;
+                    });
+                }
+
+                for (let i = 0; i < 42; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cal-cell';
+
+                    let dayNum, dateStr, isOtherMonth = false;
+
+                    if (i < firstDay) {
+                        dayNum = daysInPrevMonth - firstDay + 1 + i;
+                        const m = month === 0 ? 12 : month;
+                        const y = month === 0 ? year - 1 : year;
+                        dateStr = `${y}-${String(m).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+                        isOtherMonth = true;
+                    } else if (i >= firstDay + daysInMonth) {
+                        dayNum = i - firstDay - daysInMonth + 1;
+                        const m = month === 11 ? 1 : month + 2;
+                        const y = month === 11 ? year + 1 : year;
+                        dateStr = `${y}-${String(m).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+                        isOtherMonth = true;
+                    } else {
+                        dayNum = i - firstDay + 1;
+                        dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+                    }
+
+                    if (isOtherMonth) cell.classList.add('other-month');
+                    if (dateStr === todayStr) cell.classList.add('today');
+
+                    const dayEl = document.createElement('div');
+                    dayEl.className = 'cal-day-num';
+                    dayEl.textContent = dayNum;
+                    cell.appendChild(dayEl);
+
+                    const schedules = getSchedulesForDate(dateStr);
+                    const maxShow = 2;
+
+                    schedules.slice(0, maxShow).forEach(s => {
+                        const evEl = document.createElement('div');
+                        const typeClass = s.type === 'Booking' ? 'booking' : s.type === 'Maintenance' ? 'maintenance' : 'other';
+                        evEl.className = `cal-event ${typeClass}`;
+                        evEl.textContent = s.title;
+                        evEl.onclick = (e) => { e.stopPropagation(); openView(s.id); };
+                        cell.appendChild(evEl);
+                    });
+
+                    if (schedules.length > maxShow) {
+                        const more = document.createElement('div');
+                        more.className = 'cal-more';
+                        more.textContent = `+${schedules.length - maxShow} more`;
+                        cell.appendChild(more);
+                    }
+
+                    cell.onclick = () => openAdd(dateStr);
+                    grid.appendChild(cell);
+                }
+            }
+
+            // ── Calendar Nav ──
+            document.getElementById('prevMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); };
+            document.getElementById('nextMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); };
+            document.getElementById('goToday').onclick = () => { currentDate = new Date(); renderCalendar(); };
+
+            // ── Open Add ──
+            function openAdd(dateStr = '') {
+                editingId = null;
+                document.getElementById('modalTitle').textContent = 'Add Schedule';
+                document.getElementById('fTitle').value = '';
+                document.getElementById('fType').value = 'Booking';
+                document.getElementById('fVehicle').value = '';
+                document.getElementById('fCustomer').value = '';
+                document.getElementById('fStartDate').value = dateStr;
+                document.getElementById('fEndDate').value = dateStr;
+                document.getElementById('fNotes').value = '';
+                document.getElementById('scheduleModal').classList.add('show');
+            }
+
+            document.getElementById('addScheduleBtn').onclick = () => openAdd();
+
+            // ── Open View ──
+            function openView(id) {
+                const s = allSchedules.find(x => x.id == id);
+                if (!s) return;
+                viewingId = id;
+
+                const typeClass = s.type === 'Booking' ? 'booking' : s.type === 'Maintenance' ? 'maintenance' : 'other';
+                const pill = document.getElementById('viewTypePill');
+                pill.textContent = s.type;
+                pill.className = `event-type-pill ${typeClass}`;
+
+                document.getElementById('viewTitle').textContent = s.title;
+                document.getElementById('viewVehicle').textContent = s.plate || '—';
+                document.getElementById('viewCustomer').textContent = s.customer || '—';
+                document.getElementById('viewDates').textContent = s.start_date === s.end_date
+                    ? s.start_date : `${s.start_date} → ${s.end_date}`;
+                document.getElementById('viewNotes').textContent = s.notes || '—';
+                document.getElementById('viewModal').classList.add('show');
+            }
+
+            document.getElementById('closeViewModal').onclick = () => document.getElementById('viewModal').classList.remove('show');
+
+            document.getElementById('editFromView').onclick = () => {
+                document.getElementById('viewModal').classList.remove('show');
+                openEdit(viewingId);
+            };
+
+            document.getElementById('deleteFromView').onclick = () => {
+                document.getElementById('viewModal').classList.remove('show');
+                const s = allSchedules.find(x => x.id == viewingId);
+                if (s) openDeleteConfirm(s.id, s.title);
+            };
+
+            // ── Open Edit ──
+            function openEdit(id) {
+                const s = allSchedules.find(x => x.id == id);
+                if (!s) return;
+                editingId = id;
+
+                document.getElementById('modalTitle').textContent = 'Edit Schedule';
+                document.getElementById('fTitle').value = s.title;
+                document.getElementById('fType').value = s.type;
+                document.getElementById('fVehicle').value = s.vehicle_id || '';
+                document.getElementById('fCustomer').value = s.customer || '';
+                document.getElementById('fStartDate').value = s.start_date;
+                document.getElementById('fEndDate').value = s.end_date;
+                document.getElementById('fNotes').value = s.notes || '';
+                document.getElementById('scheduleModal').classList.add('show');
+            }
+
+            ['closeModal', 'cancelScheduleModal'].forEach(id => {
+                document.getElementById(id).onclick = () => document.getElementById('scheduleModal').classList.remove('show');
+            });
+
+            // ── Save ──
+            document.getElementById('saveScheduleBtn').onclick = async () => {
+                const title = document.getElementById('fTitle').value.trim();
+                const startDate = document.getElementById('fStartDate').value;
+                const endDate = document.getElementById('fEndDate').value;
+
+                if (!title || !startDate || !endDate) {
+                    showToast('Please fill in title, start and end date', true);
+                    return;
+                }
+
+                if (endDate < startDate) {
+                    showToast('End date cannot be before start date', true);
+                    return;
+                }
+
+                const vehicleId = document.getElementById('fVehicle').value || null;
+                const matchedVehicle = allVehicles.find(v => v.id == vehicleId);
+                const plate = matchedVehicle ? matchedVehicle.plate : '';
+
+                const data = {
+                    title,
+                    type: document.getElementById('fType').value,
+                    vehicle_id: vehicleId,
+                    plate,
+                    customer: document.getElementById('fCustomer').value.trim(),
+                    start_date: startDate,
+                    end_date: endDate,
+                    notes: document.getElementById('fNotes').value.trim()
+                };
+
+                try {
+                    const url = editingId ? `${API}/schedules/${editingId}` : `${API}/schedules`;   // ✅ /api/schedules
+                    const method = editingId ? 'PUT' : 'POST';
+                    const res = await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await res.json();
+
+                    if (result.success) {
+                        document.getElementById('scheduleModal').classList.remove('show');
+                        showToast(editingId ? 'Schedule updated!' : 'Schedule added!');
+                        loadSchedules();
+                    } else {
+                        showToast(result.message, true);
+                    }
+                } catch {
+                    showToast('Server error!', true);
+                }
+            };
+
+            // ── Delete ──
+            function openDeleteConfirm(id, name) {
+                deleteId = id;
+                document.getElementById('deleteEventName').textContent = name;
+                document.getElementById('deleteModal').classList.add('show');
+            }
+
+            document.getElementById('confirmDelete').onclick = async () => {
+                if (!deleteId) return;
+                try {
+                    const res = await fetch(`${API}/schedules/${deleteId}`, { method: 'DELETE' });  // ✅ /api/schedules
+                    const result = await res.json();
+                    if (result.success) {
+                        document.getElementById('deleteModal').classList.remove('show');
+                        showToast('Schedule deleted!');
+                        loadSchedules();
+                    } else {
+                        showToast(result.message, true);
+                    }
+                } catch {
+                    showToast('Server error!', true);
+                }
+            };
+
+            document.getElementById('cancelDelete').onclick = () => document.getElementById('deleteModal').classList.remove('show');
+
+            // ── Logout ──
+            document.getElementById('logoutBtn').onclick = () => document.getElementById('logoutModal').classList.add('show');
+            document.getElementById('confirmLogout').onclick = () => { localStorage.removeItem('loggedInUser'); sessionStorage.clear(); window.location.href = 'Login.html'; };
+            document.getElementById('cancelLogout').onclick = () => document.getElementById('logoutModal').classList.remove('show');
+
+            ['scheduleModal', 'viewModal', 'deleteModal', 'logoutModal'].forEach(id => {
+                document.getElementById(id).addEventListener('click', (e) => {
+                    if (e.target === document.getElementById(id)) document.getElementById(id).classList.remove('show');
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    ['scheduleModal', 'viewModal', 'deleteModal', 'logoutModal'].forEach(id => {
+                        document.getElementById(id).classList.remove('show');
+                    });
+                }
+            });
+
+            // ── Mobile Menu ──
+            if (window.innerWidth <= 768) {
+                const hamburger = document.createElement('button');
+                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+                hamburger.style.cssText = `position:fixed;top:20px;left:20px;z-index:1001;background:#1d4ed8;border:none;border-radius:10px;padding:10px 14px;color:white;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 12px rgba(29,78,216,0.3);`;
+                document.body.appendChild(hamburger);
+                hamburger.onclick = () => document.getElementById('sidebar').classList.toggle('active');
+            }
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) document.getElementById('sidebar').classList.remove('active');
+            });
+
+            // ── Init ──
+            loadVehicles();
+            loadSchedules();
+        });
+    </script>
+</body>
+
+</html>

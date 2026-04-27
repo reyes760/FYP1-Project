@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up | DSS Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0)
+      }
+
+      25% {
+        transform: translateX(-5px)
+      }
+
+      75% {
+        transform: translateX(5px)
+      }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    /* ✨ NEW SUCCESS SCREEN */
+    .success-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+    }
+
+    .success-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .success-card {
+      background: white;
+      border-radius: 24px;
+      padding: 48px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 50px 100px rgba(0, 0, 0, 0.3);
+      transform: scale(0.8) translateY(20px);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .success-overlay.show .success-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .countdown {
+      font-size: 4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-6">
+  <!-- ✨ NEW SUCCESS OVERLAY -->
+  <div id="successOverlay" class="success-overlay">
+    <div class="success-card">
+      <div class="w-24 h-24 bg-green-100 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+        <i class="fas fa-check text-4xl text-green-600"></i>
+      </div>
+
+      <h1 class="text-4xl font-black text-gray-900 mb-4 leading-tight">
+        Sign In Successful
+      </h1>
+
+      <p class="text-xl text-gray-600 mb-12 font-medium">
+        Your account has been created successfully!
+      </p>
+
+      <div class="space-y-6">
+        <div class="bg-blue-50 border-4 border-blue-100 rounded-3xl p-8">
+          <div class="countdown" id="countdown">5</div>
+          <p class="text-2xl font-bold text-blue-800 mt-4">
+            Redirecting to Login...
+          </p>
+        </div>
+
+        <button id="manualRedirect"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-3xl text-xl shadow-2xl transition-all duration-300 hover:scale-105">
+          <i class="fas fa-sign-in-alt mr-2"></i>Go to Login Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Your existing signup form (unchanged) -->
+  <div class="max-w-md w-full relative z-10">
+    <div class="card rounded-3xl p-8">
+      <h2 class="text-2xl font-semibold text-gray-800 text-center mb-8">Sign up your account</h2>
+
+      <form id="signupForm" action="javascript:void(0)" class="space-y-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-user mr-2 text-blue-500"></i>First Name *
+            </label>
+            <div class="relative">
+              <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"></i>
+              <input type="text" id="firstName" required
+                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="John">
+            </div>
+            <div class="error-message hidden" id="firstNameError"></div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-user mr-2 text-blue-500"></i>Last Name *
+            </label>
+            <div class="relative">
+              <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"></i>
+              <input type="text" id="lastName" required
+                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Doe">
+            </div>
+            <div class="error-message hidden" id="lastNameError"></div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-user-circle mr-2 text-blue-500"></i>Username *
+          </label>
+          <div class="relative">
+            <input type="text" id="username" required
+              class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              placeholder="johndoe123">
+            <i class="fas fa-user-circle absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"></i>
+          </div>
+          <div class="error-message hidden" id="usernameError"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-envelope mr-2 text-blue-500"></i>Email Address *
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"><i class="fas fa-envelope"></i></span>
+            <input type="email" id="emailInput" required
+              class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              placeholder="owner@company.com">
+          </div>
+          <div class="error-message hidden" id="emailError"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+            <i class="fas fa-lock text-blue-500 mr-2"></i>Password *
+          </label>
+          <div class="relative">
+            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 text-lg"></i>
+            <input type="password" id="passwordInput" required
+              class="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              placeholder="At least 6 characters" minlength="6">
+            <button type="button" id="togglePassword"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-2 rounded-full hover:bg-gray-50 transition-all hover:scale-110 shadow-sm">
+              <i class="fas fa-eye text-sm" id="eyeIcon"></i>
+            </button>
+          </div>
+          <div class="error-message hidden" id="passwordError"></div>
+        </div>
+
+        <div id="verificationSection">
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-key mr-2 text-blue-500"></i>Verification Code *
+          </label>
+          <div class="flex gap-3">
+            <div class="relative flex-1">
+              <i class="fas fa-key absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"></i>
+              <input type="text" id="verificationCode" required
+                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="6-digit code">
+            </div>
+            <button type="button" id="sendCodeBtn"
+              class="bg-blue-100 text-blue-600 font-bold px-4 rounded-2xl hover:bg-blue-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap min-w-[120px]">
+              Send Code
+            </button>
+          </div>
+          <div class="error-message hidden" id="errorMessage"></div>
+          <p id="timerDisplay" class="text-xs text-gray-500 mt-2 hidden">
+            Resend available in <span id="seconds">30</span>s
+          </p>
+        </div>
+
+        <p class="text-center mt-6 text-sm text-gray-600">
+          Already have an account? <a href="Login.html" class="font-medium text-blue-600 hover:text-blue-700">Log in
+            here</a>
+        </p>
+
+        <button type="submit" id="signupButton"
+          class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-4 rounded-2xl transition-all duration-300 text-lg shadow-lg">
+          <span id="buttonText">Sign Up</span>
+          <i id="buttonSpinner" class="fas fa-spinner fa-spin hidden ml-2"></i>
+        </button>
+      </form>
+    </div>
+
+    <div class="text-center mt-8 text-white/70 text-sm">
+      © 2026 Car Rental Decision Support System
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log('🚀 Ready!');
+      const API_BASE = 'http://localhost:5000/api';
+      let countdownInterval;
+      let isSubmitting = false;
+
+      const elements = {
+        form: document.getElementById('signupForm'),
+        button: document.getElementById('signupButton'),
+        buttonText: document.getElementById('buttonText'),
+        spinner: document.getElementById('buttonSpinner'),
+        overlay: document.getElementById('successOverlay'),
+        countdown: document.getElementById('countdown'),
+        countdownText: document.getElementById('countdownText'),
+        manualBtn: document.getElementById('manualRedirect'),
+        toggle: document.getElementById('togglePassword'),
+        eye: document.getElementById('eyeIcon'),
+        firstName: document.getElementById('firstName'),
+        lastName: document.getElementById('lastName'),
+        username: document.getElementById('username'),
+        email: document.getElementById('emailInput'),
+        password: document.getElementById('passwordInput'),
+        verificationCode: document.getElementById('verificationCode'),
+        sendCodeBtn: document.getElementById('sendCodeBtn'),
+        timerDisplay: document.getElementById('timerDisplay'),
+        secondsSpan: document.getElementById('seconds'),
+        errorMessage: document.getElementById('errorMessage'),
+      };
+
+      // ✅ Check on page load — if signup just succeeded, show the overlay
+      if (localStorage.getItem('signupSuccess') === 'true') {
+        localStorage.removeItem('signupSuccess');
+        showSuccess();
+      }
+
+      // Manual redirect button
+      elements.manualBtn.onclick = () => {
+        if (countdownInterval) clearInterval(countdownInterval);
+        window.location.href = 'Login.html';
+      };
+
+      function showSuccess() {
+        console.log('✅ Showing success overlay');
+        elements.overlay.classList.add('show');
+
+        let timeLeft = 5;
+        if (elements.countdown) elements.countdown.textContent = timeLeft;
+        if (elements.countdownText) elements.countdownText.textContent = timeLeft;
+
+        countdownInterval = setInterval(() => {
+          timeLeft--;
+          console.log(`⏳ Countdown: ${timeLeft}s`);
+
+          if (elements.countdown) elements.countdown.textContent = timeLeft;
+          if (elements.countdownText) elements.countdownText.textContent = timeLeft;
+
+          if (timeLeft <= 0) {
+            console.log('🎉 Redirecting to Login...');
+            clearInterval(countdownInterval);
+            window.location.href = 'Login.html';
+          }
+        }, 1000);
+      }
+
+      function resetForm() {
+        isSubmitting = false;
+        elements.button.disabled = false;
+        elements.buttonText.textContent = 'Sign Up';
+        elements.spinner.classList.add('hidden');
+      }
+
+      function validateForm() {
+        const errors = [];
+        if (elements.firstName.value.trim().length < 3) errors.push('First name too short');
+        if (elements.lastName.value.trim().length < 3) errors.push('Last name too short');
+        if (elements.username.value.trim().length < 5) errors.push('Username too short');
+        if (elements.password.value.length < 6) errors.push('Password too short');
+        if (!/^\S+@\S+\.\S+$/.test(elements.email.value)) errors.push('Invalid email');
+        if (errors.length > 0) {
+          alert('Please fix:\n• ' + errors.join('\n• '));
+          return false;
+        }
+        return true;
+      }
+
+      // Password toggle
+      elements.toggle.onclick = () => {
+        const isPass = elements.password.type === 'password';
+        elements.password.type = isPass ? 'text' : 'password';
+        elements.eye.classList.toggle('fa-eye');
+        elements.eye.classList.toggle('fa-eye-slash');
+      };
+
+      // ✅ Using onclick on the button instead of form onsubmit
+      elements.button.onclick = async () => {
+        if (isSubmitting || !validateForm()) return;
+
+        isSubmitting = true;
+        elements.button.disabled = true;
+        elements.buttonText.textContent = 'Creating Account...';
+        elements.spinner.classList.remove('hidden');
+
+        try {
+          const data = {
+            first_name: elements.firstName.value.trim(),
+            last_name: elements.lastName.value.trim(),
+            username: elements.username.value.trim().toLowerCase(),
+            email: elements.email.value.trim().toLowerCase(),
+            password: elements.password.value,
+            verification_code: elements.verificationCode.value.trim()
+          };
+
+          const response = await fetch(`${API_BASE}/signup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            localStorage.setItem('signupSuccess', 'true'); // ✅ Save before any possible refresh
+            showSuccess();
+          } else {
+            alert('Signup failed: ' + result.message);
+            resetForm();
+          }
+        } catch (error) {
+          alert('Server error! Is Flask running?');
+          resetForm();
+        }
+      };
+
+      let timer;
+      // Handle Sending Code
+      elements.sendCodeBtn.onclick = async () => {
+        const email = elements.email.value.trim();
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+          alert("Please enter a valid email first.");
+          return;
+        }
+
+        elements.sendCodeBtn.disabled = true;
+
+        try {
+          const response = await fetch(`${API_BASE}/send-verification`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
+
+          if (response.ok) {
+            startTimer();
+            alert("Verification code sent to " + email);
+          } else {
+            elements.sendCodeBtn.disabled = false;
+            elements.errorMessage.textContent = "Failed to send code. Try again."
+            alert("Failed to send code. Try again.");
+          }
+        } catch (error) {
+          elements.sendCodeBtn.disabled = false;
+          elements.errorMessage.textContent = "Error connecting to server. Try again."
+          alert("Error connecting to server.");
+        }
+      };
+
+      function startTimer() {
+        let timeLeft = 30; // 30-second timer as per specs
+        elements.timerDisplay.classList.remove('hidden');
+        elements.sendCodeBtn.disabled = true;
+
+        timer = setInterval(() => {
+          timeLeft--;
+          elements.secondsSpan.textContent = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            elements.sendCodeBtn.disabled = false;
+            elements.timerDisplay.classList.add('hidden');
+            elements.sendCodeBtn.textContent = "Resend Code";
+          }
+        }, 1000);
+      }
+    });
+  </script>
+</body>
+
+</html>
