@@ -1229,11 +1229,22 @@
 
             // ── Load vehicles ──
             async function loadVehicles() {
+                const rawData = localStorage.getItem('loggedInUser');
+
+                if (!rawData) {
+                    console.warn("No loggedInUser found in localStorage");
+                    return;
+                }
+
+                const user = JSON.parse(rawData);
+
                 try {
-                    const res = await fetch(`${API}/vehicles`);
+                    const res = await fetch(`${API}/vehicles?user_id=${user.user_id}`);
                     const result = await res.json();
+
                     if (result.success) {
                         allVehicles = result.vehicles;
+                        renderCalendar();
                         const sel = document.getElementById('fVehicle');
                         sel.innerHTML = '<option value="">— Select vehicle —</option>';
                         allVehicles.forEach(v => {
@@ -1244,22 +1255,31 @@
                             sel.appendChild(opt);
                         });
                     }
-                } catch (e) { console.warn('Could not load vehicles'); }
+                } catch (err) {
+                    console.error("Error loading vehicles for schedule:", err);
+                }
             }
 
             // ── Load schedules ──
             async function loadSchedules() {
+
+                const rawUser = localStorage.getItem('loggedInUser');
+                if (!rawUser) return;
+                const user = JSON.parse(rawUser);
+
                 try {
-                    const res = await fetch(`${API}/schedules`);          // ✅ /api/schedules
-                    const result = await res.json();
-                    if (result.success) {
-                        allSchedules = result.schedules;
+                    const res = await fetch(`${API}/schedules?user_id=${user.user_id}`);
+                    const data = await res.json();
+
+                    if (data.success) {
+                        allSchedules = data.schedules;
                         renderCalendar();
                         updateStats();
                     } else {
                         showToast('Failed to load schedules', true);
                     }
-                } catch {
+                } catch (err) {
+                    console.error("Load error:", err);
                     showToast('Server error! Is Flask running?', true);
                 }
             }
@@ -1299,8 +1319,12 @@
 
                 function getSchedulesForDate(dateStr) {
                     return allSchedules.filter(s => {
-                        const start = s.start_date.split('T')[0];
-                        const end = s.end_date.split('T')[0];
+                        const start = s.start_date.split(' ')[0].split('T')[0];
+                        const end = s.end_date.split(' ')[0].split('T')[0];
+
+                        const isMatch = dateStr >= start && dateStr <= end;
+                        if (isMatch) console.log(`Matched ${s.title} on ${dateStr}`);
+
                         return dateStr >= start && dateStr <= end;
                     });
                 }
@@ -1337,6 +1361,7 @@
                     cell.appendChild(dayEl);
 
                     const schedules = getSchedulesForDate(dateStr);
+                    if (schedules.length > 0) console.log(`Found ${schedules.length} events for ${dateStr}`);
                     const maxShow = 2;
 
                     schedules.slice(0, maxShow).forEach(s => {
@@ -1436,10 +1461,18 @@
             });
 
             // ── Save ──
-            document.getElementById('saveScheduleBtn').onclick = async () => {
+            document.getElementById('saveScheduleBtn').addEventListener('click', async () => {
                 const title = document.getElementById('fTitle').value.trim();
                 const startDate = document.getElementById('fStartDate').value;
                 const endDate = document.getElementById('fEndDate').value;
+
+                const rawUser = localStorage.getItem('loggedInUser');
+                if (!rawUser) {
+                    showToast('Session error. Please login again.', true)
+                    window.location.href = 'Login.html';
+                    return;
+                }
+                const user = JSON.parse(rawUser);
 
                 if (!title || !startDate || !endDate) {
                     showToast('Please fill in title, start and end date', true);
@@ -1452,10 +1485,14 @@
                 }
 
                 const vehicleId = document.getElementById('fVehicle').value || null;
-                const matchedVehicle = allVehicles.find(v => v.id == vehicleId);
-                const plate = matchedVehicle ? matchedVehicle.plate : '';
+                let plate = '';
+                if (typeof allVehicles !== 'undefined') {
+                    const matchedVehicle = allVehicles.find(v => v.id == vehicleId);
+                    plate = matchedVehicle ? matchedVehicle.plate : '';
+                }
 
                 const data = {
+                    user_id: user.user_id,
                     title,
                     type: document.getElementById('fType').value,
                     vehicle_id: vehicleId,
@@ -1467,7 +1504,7 @@
                 };
 
                 try {
-                    const url = editingId ? `${API}/schedules/${editingId}` : `${API}/schedules`;   // ✅ /api/schedules
+                    const url = editingId ? `${API}/schedules/${editingId}` : `${API}/schedules`;
                     const method = editingId ? 'PUT' : 'POST';
                     const res = await fetch(url, {
                         method,
@@ -1478,15 +1515,15 @@
 
                     if (result.success) {
                         document.getElementById('scheduleModal').classList.remove('show');
-                        showToast(editingId ? 'Schedule updated!' : 'Schedule added!');
                         loadSchedules();
+                        sessionStorage.setItem('update_notification', 'true');
                     } else {
                         showToast(result.message, true);
                     }
                 } catch {
                     showToast('Server error!', true);
                 }
-            };
+            });
 
             // ── Delete ──
             function openDeleteConfirm(id, name) {
@@ -1502,8 +1539,8 @@
                     const result = await res.json();
                     if (result.success) {
                         document.getElementById('deleteModal').classList.remove('show');
-                        showToast('Schedule deleted!');
                         loadSchedules();
+                        sessionStorage.setItem('update_notification', 'true');
                     } else {
                         showToast(result.message, true);
                     }
@@ -1549,6 +1586,11 @@
             // ── Init ──
             loadVehicles();
             loadSchedules();
+
+            if (sessionStorage.getItem('update_notification') === 'true') {
+                showToast('Schedule records updated!');
+                sessionStorage.removeItem('update_notification');
+            }
         });
     </script>
 </body>

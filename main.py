@@ -7,12 +7,14 @@ from database.user_db import init_user_db
 from database.vehicle_db import init_vehicle_db
 from database.schedule_db import init_schedule_db
 
+
 # Import route blueprints
 from routes.auth import auth_bp
 from routes.users import users_bp
 from routes.vehicles import vehicles_bp
 from routes.schedules import schedules_bp
 from routes.home import home_bp
+from routes.price_prediction import price_prediction_bp
 
 from utils.verification import mail
 
@@ -34,6 +36,7 @@ app.register_blueprint(users_bp)
 app.register_blueprint(vehicles_bp)
 app.register_blueprint(schedules_bp)
 app.register_blueprint(home_bp)
+app.register_blueprint(price_prediction_bp)
 
 def print_routes():
     """Print available API routes"""

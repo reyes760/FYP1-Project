@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home | DSS Portal</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" onload="console.log('✅ DEBUG: Chart.js library loaded')"
+        onerror="console.error('❌ DEBUG: Chart.js failed to load')"></script>
     <style>
         * {
             margin: 0;
@@ -61,12 +63,93 @@
             letter-spacing: 0.5px;
         }
 
+        .chart-title {
+            text-align: center;
+            color: #1e3a8a;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
         .logo span {
             display: block;
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.75rem;
             font-weight: 400;
             margin-top: 2px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            color: #1e3a8a;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            outline: none;
+            appearance: none;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            background-color: #fff;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 8px;
+            margin-left: 4px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            outline: none;
+            margin: 15px 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #2563eb;
+            /* Matches your blue buttons */
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #1d4ed8;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        #predictBtn {
+            grid-column: span 2;
+            margin-top: 10px;
         }
 
         .nav-menu {
@@ -114,7 +197,12 @@
             font-size: 1rem;
         }
 
-        /* Logout Section */
+        .chart-wrapper {
+            grid-column: span 2;
+            height: 400px;
+            width: 100%;
+        }
+
         .logout-section {
             padding: 1.25rem 1.5rem;
             border-top: 1px solid rgba(255, 255, 255, 0.12);
@@ -374,35 +462,54 @@
             justify-content: center;
         }
 
-        .btn {
-            padding: 0.75rem 1.75rem;
-            border-radius: 10px;
-            font-weight: 600;
+        .btn-predict {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+
+            padding: 16px;
             border: none;
+            border-radius: 14px;
+
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            font-size: 0.9rem;
+
+            /* Soft Blue Shadow */
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3),
+                0 4px 6px -2px rgba(37, 99, 235, 0.1);
+
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 10px;
         }
 
-        .btn-confirm {
-            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-            color: white;
-        }
-
-        .btn-confirm:hover {
+        /* Hover State: Slight lift and glow */
+        .btn-predict:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.4);
         }
 
-        .btn-cancel {
-            background: #f0f4ff;
-            color: #1e40af;
-            border: 1px solid #dbeafe;
+        /* Active State: "Pressed" feel */
+        .btn-predict:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 5px 10px -3px rgba(37, 99, 235, 0.3);
         }
 
-        .btn-cancel:hover {
-            background: #dbeafe;
-            transform: translateY(-2px);
+        /* Icon Animation */
+        .btn-predict i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-predict:hover i {
+            transform: rotate(15deg) scale(1.1);
         }
 
         /* Responsive */
@@ -549,52 +656,103 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
 
-    <!-- 🔥 FIXED: CAR PREDICTION + KAGGLE LINK (NO ERRORS!) -->
-    <div style="margin-top:2.5rem;">
-        <!-- Car Prediction Chart -->
-        <div
-            style="background:white;border-radius:20px;padding:2.5rem;border:1px solid #dbeafe;box-shadow:0 10px 40px rgba(29,78,216,0.1);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-                <h2 style="font-size:1.6rem;color:#1e3a8a;">
-                    <i class="fas fa-calculator" style="color:#10b981;margin-right:0.5rem;"></i>
-                    Car Price Predictor
-                </h2>
-                <a href="https://www.kaggle.com/code/ambatublou/log-level-multiple-linear-regression-analysis"
-                    target="_blank" style="color:#3b82f6;font-weight:600;font-size:0.9rem;text-decoration:none;">
-                    <i class="fas fa-external-link-alt"></i> Kaggle Model
-                </a>
-            </div>
+            <!-- Price Prediction Chart -->
+            <div class="stat-card">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Resale Car Price Predictor</h2>
+                    </div>
 
-            <!-- Controls -->
-            <div
-                style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:2rem;padding:1.5rem;background:#f8fafc;border-radius:12px;">
-                <select id="carMake"
-                    style="padding:0.75rem;border:1px solid #d1d5db;border-radius:8px;background:white;font-weight:500;">
-                    <option value="honda">Honda</option>
-                    <option value="toyota">Toyota</option>
-                    <option value="ford">Ford</option>
-                </select>
-                <input type="range" id="carAge" min="1" max="15" value="5" style="width:150px;">
-                <span id="ageText" style="font-weight:600;color:#1e3a8a;min-width:50px;">5 yrs</span>
-                <input type="range" id="carMileage" min="0" max="200" value="75" step="25" style="width:150px;">
-                <span id="mileageText" style="font-weight:600;color:#1e3a8a;min-width:60px;">75K mi</span>
-            </div>
+                    <!-- Input Form -->
+                    <div class="input-section">
+                        <!-- Input Form Updated for Strings and Real Years -->
+                        <div class="input-section">
+                            <!-- Mileage -->
+                            <div class="form-group">
+                                <label for="milleage">Kilometres driven (km): <b id="milleageValue">50,000</b></label>
+                                <input type="range" id="milleage" value="50000" min="0" max="300000" step="1000"
+                                    oninput="document.getElementById('milleageValue').innerText = Number(this.value).toLocaleString()">
+                            </div>
 
-            <!-- Chart + Price -->
-            <div style="display:grid;grid-template-columns:1fr 350px;gap:2rem;">
-                <canvas id="priceChart" height="300" style="max-height:300px;"></canvas>
-                <div
-                    style="text-align:center;padding:2rem;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:16px;border:2px solid #10b981;">
-                    <div style="font-size:0.9rem;color:#166534;margin-bottom:0.5rem;">PREDICTED VALUE</div>
-                    <div id="predictedPrice" style="font-size:2.5rem;font-weight:800;color:#059669;">$24,750</div>
-                    <div id="carDetails" style="font-size:1rem;color:#047857;font-weight:600;">Honda • 5 yrs • 75K mi
+                            <!-- Vehicle Year -->
+                            <div class="form-group">
+                                <label for="year">Vehicle Year</label>
+                                <input type="number" id="year" value="2020" min="1900" max="2026">
+                            </div>
+
+                            <!-- Gear Type -->
+                            <div class="form-group">
+                                <label for="gearType">Gear Type</label>
+                                <select id="gearType">
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="Manual">Manual</option>
+                                </select>
+                            </div>
+
+                            <!-- Brand -->
+                            <div class="form-group">
+                                <label for="brand">Brand</label>
+                                <select id="brand">
+                                    <option value="Audi">Audi</option>
+                                    <option value="BMW">BMW</option>
+                                    <option value="Ford">Ford</option>
+                                    <option value="Haval">Haval</option>
+                                    <option value="Honda">Honda</option>
+                                    <option value="Hyundai">Hyundai</option>
+                                    <option value="Isuzu">Isuzu</option>
+                                    <option value="Kia">Kia</option>
+                                    <option value="Land">Land Rover</option>
+                                    <option value="Lexus">Lexus</option>
+                                    <option value="MINI">MINI</option>
+                                    <option value="Mazda">Mazda</option>
+                                    <option value="Mercedes-Benz">Mercedes-Benz</option>
+                                    <option value="Mitsubishi">Mitsubishi</option>
+                                    <option value="Nissan">Nissan</option>
+                                    <option value="Perodua">Perodua</option>
+                                    <option value="Peugeot">Peugeot</option>
+                                    <option value="Porsche">Porsche</option>
+                                    <option value="Proton">Proton</option>
+                                    <option value="Ssangyong">Ssangyong</option>
+                                    <option value="Subaru">Subaru</option>
+                                    <option value="Suzuki">Suzuki</option>
+                                    <option value="Toyota">Toyota</option>
+                                    <option value="Volkswagen">Volkswagen</option>
+                                    <option value="Volvo">Volvo</option>
+                                </select>
+                            </div>
+
+                            <!-- State -->
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <select id="state">
+                                    <option value="Selangor">Selangor</option>
+                                    <option value="Kuala Lumpur">Kuala Lumpur</option>
+                                    <option value="Johor">Johor</option>
+                                    <option value="Penang">Penang</option>
+                                    <option value="Kedah">Kedah</option>
+                                    <option value="Melaka">Melaka</option>
+                                    <option value="Perak">Perak</option>
+                                </select>
+                            </div>
+
+                            <button class="btn-predict" id="predictBtn">
+                                <i class="fas fa-chart-line"></i> Get Prediction
+                            </button>
+                        </div>
+
+                        <!-- Messages -->
+                        <div class="error-message" id="errorMessage"></div>
+                        <div class="success-message" id="successMessage"></div>
+
+                        <!-- Chart -->
+                        <div class="chart-wrapper">
+                            <canvas id="priceChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <!-- Logout Modal -->
@@ -617,151 +775,195 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
-document.addEventListener('DOMContentLoaded', () => {
-    // ✅ SESSION CHECK (FIRST - critical!)
-    const userData = localStorage.getItem('loggedInUser');
-    if (!userData) {
-        window.location.href = 'Login.html';
-        return;
-    }
+    </main>
+    </div>
 
-    // ✅ POPULATE USER INFO
-    try {
-        const user = JSON.parse(userData);
-        const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username;
-        const initials = (
-            (user.first_name?.[0] || '') +
-            (user.last_name?.[0] || '')
-        ).toUpperCase() || user.username?.substring(0, 2).toUpperCase() || '?';
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // ==================== GLOBAL STATE ====================
+        let chartInstance = null;
+        const API = 'http://localhost:5000';
 
-        document.getElementById('welcomeHeading').textContent = `Welcome back, ${fullName}!`;
-        document.getElementById('userAvatar').textContent = initials;
-        document.getElementById('userName').textContent = fullName;
-        document.getElementById('userRole').textContent = user.role || 'Admin';
-    } catch (e) {
-        console.warn('Invalid session data:', e);
-        window.location.href = 'Login.html';
-        return;
-    }
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Session Check
+            const userData = localStorage.getItem('loggedInUser');
+            if (!userData) {
+                window.location.href = 'Login.html';
+                return;
+            }
 
-    // ✅ NAVIGATION
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            navLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            console.log('Navigating to:', link.getAttribute('data-section'));
+            // Populate User Info
+            try {
+                const user = JSON.parse(userData);
+                const fullName = user.full_name || `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username;
+                const initials = ((user.first_name?.[0] || '') + (user.last_name?.[0] || '')).toUpperCase() || user.username?.substring(0, 2).toUpperCase() || '?';
+
+                document.getElementById('welcomeHeading').textContent = `Welcome back, ${fullName}!`;
+                document.getElementById('userAvatar').textContent = initials;
+                document.getElementById('userName').textContent = fullName;
+            } catch (e) {
+                console.error('Session parse error:', e);
+                window.location.href = 'Login.html';
+            }
+
+            // Logout Logic
+            document.getElementById('logoutBtn').onclick = () => {
+                document.getElementById('logoutModal').classList.add('show');
+            };
+
+            document.getElementById('confirmLogout').onclick = () => {
+                localStorage.removeItem('loggedInUser');
+                window.location.href = 'Login.html';
+            };
+
+            document.getElementById('cancelLogout').onclick = () => {
+                document.getElementById('logoutModal').classList.remove('show');
+            };
+
+            // Prediction Button
+            document.getElementById('predictBtn').addEventListener('click', getPrediction);
+
+            // Initialize chart with default values
+            getPrediction();
         });
-    });
 
-    // ✅ LOGOUT MODAL
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        document.getElementById('logoutModal').classList.add('show');
-    });
-    document.getElementById('confirmLogout').addEventListener('click', () => {
-        localStorage.removeItem('loggedInUser');
-        sessionStorage.clear();
-        window.location.href = 'Login.html';
-    });
-    document.getElementById('cancelLogout').addEventListener('click', () => {
-        document.getElementById('logoutModal').classList.remove('show');
-    });
-    document.getElementById('logoutModal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('logoutModal')) {
-            document.getElementById('logoutModal').classList.remove('show');
+        // ==================== API CALLS ====================
+        async function getPrediction() {
+            const payload = {
+                milleage: parseFloat(document.getElementById('milleage').value) || 0,
+                year: parseInt(document.getElementById('year').value) || 2020,
+                gear_type: document.getElementById('gearType').value,
+                brand: document.getElementById('brand').value,
+                state: document.getElementById('state').value
+            };
+
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+
+            try {
+                // Call Flask backend
+                const response = await fetch(`${API}/api/predict_range`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update chart
+                    updateChart(data.years, data.predictions);
+
+                    document.getElementById('successMessage').classList.add('show');
+                }
+            } catch (error) {
+                console.error('Prediction error:', error);
+
+                // Show dummy data as fallback
+                showFallbackChart();
+            } finally {
+                console.log("Chart prediction shown")
+            }
         }
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.getElementById('logoutModal').classList.remove('show');
-        }
-    });
 
-    // ✅ MOBILE MENU
-    if (window.innerWidth <= 768) {
-        const hamburger = document.createElement('button');
-        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-        hamburger.style.cssText = `
-            position: fixed; top: 20px; left: 20px; z-index: 1001;
-            background: #1d4ed8; border: none; border-radius: 10px;
-            padding: 10px 14px; color: white; font-size: 1.1rem; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(29,78,216,0.3);
-        `;
-        document.body.appendChild(hamburger);
-        hamburger.addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-    }
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) {
-            document.getElementById('sidebar').classList.remove('active');
-        }
-    });
+        // ==================== CHART FUNCTIONS ====================
+        function updateChart(labels, data) {
+            const canvas = document.getElementById('priceChart');
+            const ctx = canvas.getContext('2d');
 
-    // 🔥 FIXED CAR PRICE PREDICTION (SAFE - NO ERRORS)
-    let priceChart;
-    const carPrices = {honda:26500, toyota:28000, ford:38000, bmw:42000, tesla:45000};
+            // Destroy existing chart
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
 
-    const updatePriceChart = () => {
-        const makeEl = document.getElementById('carMake');
-        const ageEl = document.getElementById('carAge');
-        const mileageEl = document.getElementById('carMileage');
-        
-        if(!makeEl || !ageEl || !mileageEl) return console.log('⚠️ Chart elements loading...');
-        
-        const make = makeEl.value;
-        const age = parseInt(ageEl.value);
-        const mileage = parseInt(mileageEl.value);
-        
-        document.getElementById('ageText').textContent = age + ' yrs';
-        document.getElementById('mileageText').textContent = mileage + 'K mi';
-        
-        const base = carPrices[make] || 25000;
-        const price = Math.round(base * Math.pow(0.88, age) * (1 - mileage/300));
-        
-        const priceEl = document.getElementById('predictedPrice');
-        const detailEl = document.getElementById('carDetails');
-        if(priceEl) priceEl.textContent = '$' + price.toLocaleString();
-        if(detailEl) detailEl.textContent = make.toUpperCase() + ' • ' + age + ' yrs • ' + mileage + 'K mi';
-        
-        // Chart
-        const canvas = document.getElementById('priceChart');
-        if(canvas && !priceChart) {
-            priceChart = new Chart(canvas, {
+            // Create new chart
+            chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Array.from({length:15}, (_,i)=>`${i+1}yrs`),
+                    labels: labels,
                     datasets: [{
-                        label: 'Resale Value',
-                        data: Array.from({length:15}, (_,i)=>Math.round(base * Math.pow(0.88, i+1) * 0.75)),
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16,185,129,0.1)',
+                        label: 'Predicted Resale Value (RM)',
+                        data: data,
+                        borderColor: '#1d4ed8',
+                        backgroundColor: 'rgba(29, 78, 216, 0.1)',
                         fill: true,
-                        tension: 0.4
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#1d4ed8',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
-                    plugins: {legend: {display: false}},
-                    scales: {y: {ticks: {callback: v=>' $'+v}}}
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                font: { size: 12, weight: '600' },
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: (context) => `Value: RM${context.parsed.y.toLocaleString()}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => 'RM' + value.toLocaleString(),
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
                 }
             });
         }
-    };
 
-    // 🔥 SAFE EVENT LISTENERS (100% NO ERRORS)
-    ['carMake','carAge','carMileage'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.addEventListener('input', updatePriceChart);
-    });
-    
-    // Initial chart load
-    setTimeout(updatePriceChart, 300);
+        function showFallbackChart() {
+            const basePrice = 15847;
+            const fallbackData = [
+                basePrice,
+                Math.round(basePrice * 0.91),
+                Math.round(basePrice * 0.84),
+                Math.round(basePrice * 0.76),
+                Math.round(basePrice * 0.70),
+                Math.round(basePrice * 0.62)
+            ];
 
-    console.log('✅ DSS Dashboard + Price Predictor LOADED');
-});
-</script>
+            updateChart(
+                ['Now', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                fallbackData
+            );
+
+            console.log('⚠ Using fallback dummy data. Backend not responding.');
+        }
+    </script>
 </body>
 
 </html>

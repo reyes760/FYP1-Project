@@ -1052,18 +1052,27 @@
 
             // ── Load vehicles ──
             async function loadVehicles() {
+                // 1. Get user data from localStorage (saved during Login)
+                const userData = JSON.parse(localStorage.getItem('loggedInUser'));
+
+                if (!userData || !userData.user_id) {
+                    window.location.href = 'Login.html';
+                    return;
+                }
+
                 try {
-                    const res = await fetch(`${API}/vehicles`);
-                    const result = await res.json();
-                    if (result.success) {
-                        allVehicles = result.vehicles;
-                        renderTable(allVehicles);
+                    // 2. Attach the user_id to the API request
+                    const response = await fetch(`${API}/vehicles?user_id=${userData.user_id}`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        allVehicles = data.vehicles;
+
+                        renderTable(data.vehicles);
                         updateStats(allVehicles);
-                    } else {
-                        showToast('Failed to load vehicles', true);
                     }
-                } catch {
-                    showToast('Server error! Is Flask running?', true);
+                } catch (error) {
+                    console.error('Error loading fleet:', error);
                 }
             }
 
@@ -1152,23 +1161,6 @@
                 document.getElementById('vehicleModal').classList.add('show');
             });
 
-            // ── Edit ──
-            window.openEdit = (id) => {
-                const v = allVehicles.find(x => x.id === id);
-                if (!v) return;
-                editingId = id;
-                document.getElementById('modalTitle').textContent = 'Edit Vehicle';
-                document.getElementById('fPlate').value = v.plate;
-                document.getElementById('fBrand').value = v.brand;
-                document.getElementById('fModel').value = v.model;
-                document.getElementById('fYear').value = v.year;
-                document.getElementById('fColor').value = v.color || '';
-                document.getElementById('fStatus').value = v.status;
-                document.getElementById('fMileage').value = v.mileage || '';
-                document.getElementById('fLastService').value = v.last_service || '';
-                document.getElementById('vehicleModal').classList.add('show');
-            };
-
             // ── Close modal ──
             ['closeModal', 'cancelVehicleModal'].forEach(id => {
                 document.getElementById(id).addEventListener('click', () => {
@@ -1183,12 +1175,29 @@
                 const model = document.getElementById('fModel').value.trim();
                 const year = document.getElementById('fYear').value.trim();
 
+                const rawData = localStorage.getItem('loggedInUser');
+
+                if (!rawData) {
+                    showToast('Session Error. Please login again.', true);
+                    window.location.href = 'Login.html';
+                    return;
+                }
+
+                const user = JSON.parse(rawData);
+
+                if (!user.user_id) {
+                    showToast('Invalid session data. Please login again.', true);
+                    window.location.href = 'Login.html';
+                    return;
+                }
+
                 if (!plate || !brand || !model || !year) {
                     showToast('Please fill in all required fields', true);
                     return;
                 }
 
                 const data = {
+                    user_id: user.user_id,
                     plate, brand, model,
                     year: parseInt(year),
                     color: document.getElementById('fColor').value.trim(),
@@ -1218,6 +1227,26 @@
                     showToast('Server error!', true);
                 }
             });
+
+            // ── Edit ──
+            window.openEdit = (id) => {
+                console.log("Searching for vehicle ID:", id);
+                console.log("Current allVehicles content:", allVehicles);
+
+                const v = allVehicles.find(x => x.id === id);
+                if (!v) return;
+                editingId = id;
+                document.getElementById('modalTitle').textContent = 'Edit Vehicle';
+                document.getElementById('fPlate').value = v.plate;
+                document.getElementById('fBrand').value = v.brand;
+                document.getElementById('fModel').value = v.model;
+                document.getElementById('fYear').value = v.year;
+                document.getElementById('fColor').value = v.color || '';
+                document.getElementById('fStatus').value = v.status;
+                document.getElementById('fMileage').value = v.mileage || '';
+                document.getElementById('fLastService').value = v.last_service || '';
+                document.getElementById('vehicleModal').classList.add('show');
+            };
 
             // ── Delete ──
             window.openDelete = (id, name) => {
