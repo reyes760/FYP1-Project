@@ -15,6 +15,7 @@ from routes.vehicles import vehicles_bp
 from routes.schedules import schedules_bp
 from routes.home import home_bp
 from routes.price_prediction import price_prediction_bp
+from routes.rental_price import rental_price_bp
 
 from utils.verification import mail
 
@@ -37,6 +38,7 @@ app.register_blueprint(vehicles_bp)
 app.register_blueprint(schedules_bp)
 app.register_blueprint(home_bp)
 app.register_blueprint(price_prediction_bp)
+app.register_blueprint(rental_price_bp)
 
 def print_routes():
     """Print available API routes"""

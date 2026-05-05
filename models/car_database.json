@@ -1,0 +1,216 @@
+{
+  "Audi": [
+    "A3",
+    "A4",
+    "A5",
+    "A6",
+    "A7",
+    "Q3",
+    "Q5",
+    "Q7"
+  ],
+  "BMW": [
+    "118i",
+    "316i",
+    "318i",
+    "320i",
+    "328i",
+    "330e",
+    "330i",
+    "428i",
+    "520i",
+    "528i",
+    "530e",
+    "530i",
+    "730Li",
+    "X1",
+    "X3",
+    "X4",
+    "X5",
+    "X6"
+  ],
+  "Ford": [
+    "EcoSport",
+    "Fiesta",
+    "Focus",
+    "Kuga",
+    "MUSTANG",
+    "Ranger"
+  ],
+  "Haval": [
+    "H1",
+    "H2"
+  ],
+  "Honda": [
+    "Accord",
+    "BR-V",
+    "CR-V",
+    "City",
+    "Civic",
+    "HR-V",
+    "Jazz",
+    "Odyssey"
+  ],
+  "Hyundai": [
+    "Elantra",
+    "Grand",
+    "Ioniq",
+    "Sonata",
+    "Tucson"
+  ],
+  "Isuzu": [
+    "D-Max"
+  ],
+  "Kia": [
+    "Carnival",
+    "Cerato",
+    "Optima",
+    "Picanto",
+    "Rio",
+    "Sorento",
+    "Sportage"
+  ],
+  "Land": [
+    "Rover"
+  ],
+  "Lexus": [
+    "CT200h",
+    "ES250",
+    "IS250",
+    "NX200t",
+    "NX300",
+    "RX200t",
+    "RX350"
+  ],
+  "MINI": [
+    "3",
+    "Clubman",
+    "Countryman"
+  ],
+  "Mazda": [
+    "2",
+    "3",
+    "6",
+    "8",
+    "BT-50",
+    "Biante",
+    "CX-3",
+    "CX-5"
+  ],
+  "Mercedes-Benz": [
+    "A180",
+    "A200",
+    "A250",
+    "A45",
+    "B200",
+    "C180",
+    "C200",
+    "C200K",
+    "C250",
+    "C300",
+    "C350",
+    "C43",
+    "CLA180",
+    "CLA200",
+    "CLA250",
+    "E200",
+    "E250",
+    "E300",
+    "G350",
+    "GLA200",
+    "GLA250",
+    "GLC250",
+    "GLC300"
+  ],
+  "Mitsubishi": [
+    "ASX",
+    "Outlander",
+    "Triton"
+  ],
+  "Nissan": [
+    "Almera",
+    "Grand",
+    "Navara",
+    "Serena",
+    "Sylphy",
+    "Teana",
+    "X-Trail"
+  ],
+  "Perodua": [
+    "AXIA",
+    "Alza",
+    "Aruz",
+    "Bezza",
+    "Myvi"
+  ],
+  "Peugeot": [
+    "2008",
+    "208",
+    "3008",
+    "308",
+    "408",
+    "5008",
+    "508"
+  ],
+  "Porsche": [
+    "718",
+    "Boxster",
+    "Cayman",
+    "Macan"
+  ],
+  "Proton": [
+    "Ertiga",
+    "Exora",
+    "Inspira",
+    "Iriz",
+    "Perdana",
+    "Persona",
+    "Preve",
+    "Saga",
+    "X70"
+  ],
+  "Ssangyong": [
+    "Stavic"
+  ],
+  "Subaru": [
+    "Forester",
+    "XV"
+  ],
+  "Suzuki": [
+    "Grand",
+    "Jimny"
+  ],
+  "Toyota": [
+    "Alphard",
+    "Camry",
+    "Corolla",
+    "Estima",
+    "FJ",
+    "Fortuner",
+    "Harrier",
+    "Hilux",
+    "Innova",
+    "Land",
+    "Prius",
+    "Rush",
+    "Sienta",
+    "Vellfire",
+    "Vios"
+  ],
+  "Volkswagen": [
+    "Beetle",
+    "Cross",
+    "Golf",
+    "Jetta",
+    "Passat",
+    "Polo",
+    "Tiguan",
+    "Vento"
+  ],
+  "Volvo": [
+    "S60",
+    "V40",
+    "XC60",
+    "XC90"
+  ]
+}

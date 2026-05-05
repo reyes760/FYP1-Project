@@ -7,6 +7,7 @@ def init_schedule_db():
     conn.execute('''
         CREATE TABLE IF NOT EXISTS schedules (
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id    INTEGER NOT NULL,
             title      TEXT NOT NULL,
             vehicle_id INTEGER,
             plate      TEXT,
@@ -16,7 +17,7 @@ def init_schedule_db():
             end_date   TEXT NOT NULL,
             notes      TEXT,
             created_at TEXT NOT NULL
-        )
+            )
     ''')
     conn.commit()
     conn.close()

@@ -562,7 +562,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="Fleet_Management.html" class="nav-link" data-section="fleet">
-                        <i class="fas fa-truck"></i> Fleet Management
+                        <i class="fas fa-truck"></i> Car Management
                     </a>
                 </li>
                 <li class="nav-item">
@@ -752,6 +752,95 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Rental Price prediction -->
+            <div class="stat-card">
+
+                <div class="chart-header">
+                    <h2 class="chart-title">Rental Car Price Suggestor</h2>
+                </div>
+
+                <form id="predictionForm">
+                    <!-- 1. Brand Selection -->
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <select id="rental_brand" onchange="populateRentalModels()">
+                            <option value="Audi">Audi</option>
+                            <option value="BMW">BMW</option>
+                            <option value="Ford">Ford</option>
+                            <option value="Haval">Haval</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Hyundai">Hyundai</option>
+                            <option value="Isuzu">Isuzu</option>
+                            <option value="Kia">Kia</option>
+                            <option value="Land">Land Rover</option>
+                            <option value="Lexus">Lexus</option>
+                            <option value="MINI">MINI</option>
+                            <option value="Mazda">Mazda</option>
+                            <option value="Mercedes-Benz">Mercedes-Benz</option>
+                            <option value="Mitsubishi">Mitsubishi</option>
+                            <option value="Nissan">Nissan</option>
+                            <option value="Perodua">Perodua</option>
+                            <option value="Peugeot">Peugeot</option>
+                            <option value="Porsche">Porsche</option>
+                            <option value="Proton">Proton</option>
+                            <option value="Ssangyong">Ssangyong</option>
+                            <option value="Subaru">Subaru</option>
+                            <option value="Suzuki">Suzuki</option>
+                            <option value="Toyota">Toyota</option>
+                            <option value="Volkswagen">Volkswagen</option>
+                            <option value="Volvo">Volvo</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Model Selection (Populated by JS) -->
+                    <div class="form-group">
+                        <label for="rental_model">Model:</label>
+                        <select id="rental_model" name="Model" required disabled>
+                            <option value="">-- Select Brand First --</option>
+                        </select>
+                    </div>
+
+                    <!-- 3. Gear Type -->
+                    <div class="form-group">
+                        <label>Gear Type:</label>
+                        <select id="rental_Gear_Type" name="Gear_Type" required>
+                            <option value="Automatic">Automatic</option>
+                            <option value="Manual">Manual</option>
+                        </select>
+                    </div>
+
+                    <!-- 4. Year & Mileage -->
+                    <div class="form-group">
+                        <label>Car Year:</label>
+                        <input type="number" id="rental_year" name="year" placeholder="e.g. 2020" required>
+                    </div>
+
+                    <!-- 5. Milleage -->
+                    <div class="form-group">
+                        <label for="milleage">Milleage (km): <b id="rentalmilleageValue">50,000</b></label>
+                        <input type="range" id="rental_milleage" value="50000" min="0" max="300000" step="1000"
+                            oninput="document.getElementById('rentalmilleageValue').innerText = Number(this.value).toLocaleString()">
+                    </div>
+
+                    <!-- 6. State -->
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <select id="rental_state">
+                            <option value="Selangor">Selangor</option>
+                            <option value="Kuala Lumpur">Kuala Lumpur</option>
+                            <option value="Johor">Johor</option>
+                            <option value="Penang">Penang</option>
+                            <option value="Kedah">Kedah</option>
+                            <option value="Melaka">Melaka</option>
+                            <option value="Perak">Perak</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-predict">
+                        <i class="fas fa-chart-line"></i> Suggested Price
+                    </button>
+                </form>
+            </div>
         </main>
     </div>
 
@@ -783,6 +872,41 @@
         // ==================== GLOBAL STATE ====================
         let chartInstance = null;
         const API = 'http://localhost:5000';
+
+        document.getElementById('predictionForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            // 1. Gather values from your fixed IDs
+            const payload = {
+                milleage: parseFloat(document.getElementById('rental_milleage').value),
+                year: parseInt(document.getElementById('rental_year').value),
+                gear_type: document.getElementById('rental_Gear_Type').value,
+                brand: document.getElementById('rental_brand').value,
+                model: document.getElementById('rental_model').value,
+                state: document.getElementById('rental_state').value // Ensure this ID is unique
+            };
+
+            try {
+                // 2. Send POST request to your rental_price_bp route
+                const response = await fetch(`${API}/api/rental_price`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Display the result (Daily Rate) to the user
+                    alert(`Predicted Rental Price: RM ${result.prediction.toFixed(2)} per day`);
+                } else {
+                    alert("Error: " + result.error);
+                }
+            } catch (error) {
+                console.error("Submission failed:", error);
+                alert("Failed to connect to the prediction server.");
+            }
+        };
 
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
@@ -962,6 +1086,48 @@
             );
 
             console.log('⚠ Using fallback dummy data. Backend not responding.');
+        }
+
+        let carDatabase = {}; // Global variable to hold the data
+
+        fetch('/models/car_database.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status); // Helps debug 404 errors
+                }
+                return response.json();
+            })
+            .then(data => {
+                carDatabase = data; // Data from your JSON file
+                console.log("Car database loaded successfully.");
+            })
+            .catch(error => console.error("Error loading car database:", error));
+
+        function populateRentalModels() {
+            const brandSelect = document.getElementById("rental_brand");
+            const modelSelect = document.getElementById("rental_model");
+            const selectedBrand = brandSelect.value;
+
+            // 1. Clear previous options
+            modelSelect.innerHTML = '<option value="">-- Select Model --</option>';
+
+            // 2. Check if brand exists in your fetched carDatabase
+            if (selectedBrand && carDatabase[selectedBrand]) {
+                // 3. UNLOCK the dropdown
+                modelSelect.disabled = false;
+
+                // 4. Populate with models
+                carDatabase[selectedBrand].forEach(model => {
+                    const option = document.createElement("option");
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+                console.log("Unlocked models for:", selectedBrand);
+            } else {
+                // Keep it locked if no brand is selected
+                modelSelect.disabled = true;
+            }
         }
     </script>
 </body>

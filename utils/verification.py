@@ -39,7 +39,7 @@ def send_verification_email(email):
         return False
 
 def verify_code(email, user_provided_code):
-    ## Checks if the code matches and is still valid.
+    # Checks if the code matches and is still valid.
     stored_data = verification_cache.get(email.strip().lower())
     
     if not stored_data:

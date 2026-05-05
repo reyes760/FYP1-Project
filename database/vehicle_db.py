@@ -7,14 +7,16 @@ def init_vehicle_db():
     conn.execute('''
         CREATE TABLE IF NOT EXISTS vehicles (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
-            plate        TEXT NOT NULL UNIQUE,
+            user_id INTEGER NOT NULL,
+            plate        TEXT NOT NULL,
             brand        TEXT NOT NULL,
             model        TEXT NOT NULL,
             year         INTEGER NOT NULL,
             color        TEXT,
             status       TEXT DEFAULT 'Available',
             mileage      INTEGER DEFAULT 0,
-            last_service TEXT
+            last_service TEXT,
+            UNIQUE(plate, user_id)
         )
     ''')
     conn.commit()
